@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			#game{
+				box-sizing: border-box;
+				width:320px;
+				height: 568px;	
+				margin: 200px auto;
+				position: relative;		
+				background: url(images/start_bg.png);
+					
+			}
+			#plan{
+				width:66px;
+				height: 80px;	
+				position: absolute;
+				top:490px;
+				left:130px;
+				display: none;
+			}
+			.bullet{
+				position: absolute;
+			}
+			.enemy{
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="game">
+			<div id="plan"><img src="images/self.gif"></div>
+		</div>
+		<script src="js/tools.js"></script>
+		<script type="text/javascript">
+			$("#game").onclick = function(){
+				$("#game").style.background = "url(images/bg.png)";
+				$("#plan").style.display = "block";
+			}
+			$("#plan").onmousedown = function(e){
+				e = e || event;
+				var src = e.target || e.srcElement,
+				    _offsetX = e.offsetX,
+				    _offsetY = e.offsetY;
+				$("#game").onmousemove = function(e){
+					e.preventDefault();
+					var _left = e.pageX - _offsetX-offset($("#game")).left,
+						_top = e.pageY - _offsetY-offset($("#game")).top;
+						if(_left<=0){
+							_left = 0;
+						}else if(_left >= innerWidth($("#game"))-outerWidth($("#plan"))){
+							_left = innerWidth($("#game"))-outerWidth($("#plan"));
+						}
+						if(_top <=0){
+							_top = 0;
+						}else if(_top >= innerHeight($("#game"))-outerHeight($("#plan"))){
+							_top = innerHeight($("#game"))-outerHeight($("#plan"));
+						}
+					css($("#plan"),{
+						top:_top + "px",
+						left:_left + "px"
+					});									
+				}
+								
+				//生成子弹、敌机
+				var count = 0,
+				     num ;
+					var timer = setInterval(function(){
+						count++;
+						var _bullet = [],					    
+							pl_left = parseFloat($("#plan").offsetLeft),
+							pl_top = parseFloat($("#plan").offsetTop);
+							
+						if(count % 10 ===0){	
+							
+							var _img = document.createElement("img");						 
+							_img.src = "images/bullet.png";	
+							 _img.className = "bullet";
+						    _bullet = $(".bullet");							   
+						    _img.style.left = pl_left + parseFloat(outerWidth($("#plan")))/2 + "px";
+						   _img.style.top = pl_top + "px";
+						    $("#game").appendChild(_img);				    
+							
+							for(var i =_bullet.length-1;i>=0;i--){
+							    _bullet[i].style.top = _bullet[i].offsetTop -30 +"px"; 
+							   if(_bullet[i].offsetTop<=0){
+							   		$("#game").removeChild($(".bullet")[i]);
+							   }
+							}
+						}
+						
+						var _enemy = document.createElement("img"),
+								_enemy_array = [];
+						if(count % 20 ===0){
+							
+							_enemy.src = "images/small_fly.png";	
+							_enemy.className = "enemy";
+						    _enemy_array = $(".enemy");							   
+						    
+						    $("#game").appendChild(_enemy);
+						  	_enemy.style.left = Math.random()*(320-outerWidth($(".enemy")[0]))+ "px";
+						   	_enemy.style.top = 0 + "px";
+						    
+							for(var i =_enemy_array.length-1;i>=0;i--){
+							    _enemy_array[i].style.top = _enemy_array[i].offsetTop +20 +"px"; 
+							  	if(_enemy_array[i].offsetTop>=innerHeight($("#game"))){
+							   		$("#game").removeChild($(".enemy")[i]);
+							   }
+							}
+						}
+						
+						//碰撞检测
+						for(var i =_bullet.length-1;i>=0;i--){					
+							for(var j =_enemy_array.length-1;j>=0;j--){
+								if($(".enemy")[j].offsetTop>=$(".bullet")[i].offsetTop-outerHeight($(".enemy")[0])
+								&&$(".enemy")[j].offsetTop>=$(".bullet")[i].offsetTop
+								&&$(".bullet")[i].offsetLeft>=$(".enemy")[j].offsetLeft-outerWidth($(".bullet")[0])
+								&&$(".bullet")[i].offsetLeft<=$(".enemy")[j].offsetLeft+outerWidth($(".enemy")[0])
+								){
+								   	$("#game").removeChild($(".enemy")[j]);
+								   	$("#game").removeChild($(".bullet")[i]);
+								}
+							}
+						}
+						for(var x =_enemy_array.length-1;x>=0;x--){
+								if($(".enemy")[x].offsetTop>=$("#plan").offsetTop-outerHeight($(".enemy")[x])
+								&&$(".enemy")[x].offsetTop<=$("#plan").offsetTop+outerHeight($("#plan"))							
+								&&$("#plan").offsetLeft<=$(".enemy")[x].offsetLeft+outerWidth($(".enemy")[x])
+								&&$("#plan").offsetLeft>=$(".enemy")[x].offsetLeft-outerWidth($("#plan"))
+								){
+								   	
+								   	clearInterval(timer);
+								   	alert("游戏结束,刷新页面重新开始");
+								   	$("body")[0].removeChild($("#game"));
+								}
+						}
+					},1000/60)
+										
+				document.onmouseup = function(){
+					$("#game").onmousemove = null;
+					document.onmouseup = null;	
+				}	
+			}
+			
+			
+			
+		</script>
+	</body>
+</html>

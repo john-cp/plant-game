@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		#container {
+	width: 320px;
+	height: 568px;
+	position: relative;
+	margin:50px auto;
+	border: 1px solid;
+	overflow: hidden;
+}
+
+.start {
+	width: 320px;
+	height: 568px;
+	background: url(../images/start_bg.png);
+}
+
+.gameContainer {
+	width: 320px;
+	height: 568px;
+	background: url(../images/bg.png);
+}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div class="start"></div>
+		<div class="gameContainer"></div>
+	</div>
+
+	<script src="js/tools.js"></script>
+	<script src="js/Map.js"></script>
+	<script src="js/Self.js"></script>
+	<script src="js/Role.js"></script>
+	<script src="js/Bullet.js"></script>
+	<script src="js/Enemy.js"></script>
+	<script src="js/Game.js"></script>
+	<script>
+		Game.startGame();
+	</script>
+</body>
+</html>
